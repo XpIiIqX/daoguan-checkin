@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>每日导管记录</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0f4f8;
+      --surface: #ffffff;
+      --surface2: #f7f9fc;
+      --border: rgba(0,0,0,0.08);
+      --text: #1a202c;
+      --text2: #4a5568;
+      --text3: #a0aec0;
+      --green: #38a169;
+      --green-light: #c6f6d5;
+      --green-dark: #276749;
+      --red: #e53e3e;
+      --red-light: #fed7d7;
+      --red-dark: #9b2c2c;
+      --accent: #4f46e5;
+      --accent-light: #e0e7ff;
+      --accent-dark: #3730a3;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
+      --shadow-md: 0 8px 32px rgba(0,0,0,0.12);
+    }
+
+    body {
+      font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px 48px;
+      color: var(--text);
+    }
+
+    /* ══ LOADING ══ */
+    #loadingScreen {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      min-height: 60vh;
+      align-self: center;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loadingScreen p { font-size: 13px; color: var(--text3); }
+
+    /* ══ AUTH ══ */
+    #authScreen {
+      display: none;
+      width: 100%;
+      max-width: 400px;
+      flex-direction: column;
+      gap: 0;
+      align-self: center;
+    }
+    #authScreen.visible { display: flex; }
+
+    .auth-logo { text-align: center; margin-bottom: 32px; }
+    .auth-logo-icon {
+      width: 60px; height: 60px;
+      background: var(--accent);
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .auth-logo-icon svg { color: #fff; width: 30px; height: 30px; }
+    .auth-logo h1 { font-size: 20px; font-weight: 700; }
+    .auth-logo p { font-size: 13px; color: var(--text3); margin-top: 4px; }
+
+    .auth-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .auth-tabs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4px; background: var(--surface2);
+      border-radius: var(--radius-sm); padding: 4px;
+      margin-bottom: 24px;
+    }
+    .auth-tab {
+      padding: 9px; border: none; border-radius: 8px;
+      font-family: inherit; font-size: 13px; font-weight: 700;
+      cursor: pointer; background: transparent; color: var(--text3);
+      transition: background 0.15s, color 0.15s;
+    }
+    .auth-tab.active {
+      background: var(--surface); color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .auth-form { display: flex; flex-direction: column; gap: 14px; }
+    .auth-form.hidden { display: none; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 12px; font-weight: 700; color: var(--text2); }
+    .field input {
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      font-family: inherit; font-size: 14px;
+      color: var(--text); background: var(--surface);
+      outline: none; transition: border-color 0.15s;
+    }
+    .field input:focus { border-color: var(--accent); }
+
+    .auth-error {
+      font-size: 12px; color: var(--red-dark);
+      background: var(--red-light);
+      padding: 9px 12px; border-radius: var(--radius-sm);
+      display: none;
+    }
+    .auth-error.show { display: block; }
+
+    .auth-submit {
+      padding: 13px; border-radius: var(--radius-sm);
+      border: none; background: var(--accent); color: #fff;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background 0.12s, transform 0.1s;
+      margin-top: 4px; position: relative;
+    }
+    .auth-submit:hover { background: var(--accent-dark); }
+    .auth-submit:active { transform: scale(0.98); }
+    .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .auth-hint {
+      font-size: 12px; color: var(--text3);
+      text-align: center; margin-top: 16px; line-height: 1.6;
+    }
+
+    /* ══ APP ══ */
+    #appScreen {
+      display: none;
+      width: 100%; max-width: 440px;
+      flex-direction: column; gap: 16px;
+    }
+    #appScreen.visible { display: flex; }
+
+    .topbar {
+      display: flex; align-items: center;
+      justify-content: space-between; padding: 6px 0;
+    }
+    .topbar-left { display: flex; flex-direction: column; gap: 2px; }
+    .topbar-left h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+    .topbar-left .date { font-size: 12px; color: var(--text3); }
+
+    .user-pill {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 40px; padding: 6px 12px 6px 8px;
+      box-shadow: var(--shadow);
+    }
+    .user-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff;
+    }
+    .user-name {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      max-width: 120px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    .logout-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--text3); padding: 2px;
+      display: flex; align-items: center;
+      border-radius: 6px; transition: color 0.1s, background 0.1s;
+    }
+    .logout-btn:hover { color: var(--red); background: var(--red-light); }
+    .logout-btn svg { width: 16px; height: 16px; }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 20px; box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-size: 12px; font-weight: 700; color: var(--text3);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 16px;
+    }
+
+    .today-banner {
+      display: none; align-items: center; gap: 10px;
+      padding: 12px 16px; border-radius: var(--radius-sm);
+      margin-bottom: 16px; font-size: 14px; font-weight: 500;
+    }
+    .today-banner.done { background: var(--green-light); color: var(--green-dark); }
+    .today-banner.skip { background: var(--red-light); color: var(--red-dark); }
+    .today-banner svg { flex-shrink: 0; width: 18px; height: 18px; }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .action-btn {
+      padding: 18px 12px; border-radius: var(--radius-sm);
+      border: 1.5px solid; background: var(--surface);
+      cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+      font-family: inherit;
+    }
+    .action-btn:active { transform: scale(0.96); }
+    .action-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+    .action-btn svg { width: 32px; height: 32px; }
+    .action-btn span { font-size: 13px; font-weight: 700; }
+
+    .btn-yes { border-color: var(--green); color: var(--green-dark); }
+    .btn-yes:hover:not(:disabled) { background: var(--green-light); box-shadow: 0 4px 16px rgba(56,161,105,0.2); }
+    .btn-yes svg { color: var(--green); }
+    .btn-no { border-color: var(--red); color: var(--red-dark); }
+    .btn-no:hover:not(:disabled) { background: var(--red-light); box-shadow: 0 4px 16px rgba(229,62,62,0.2); }
+    .btn-no svg { color: var(--red); }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+    .stat {
+      background: var(--surface2); border-radius: var(--radius-sm);
+      padding: 14px 10px; text-align: center; border: 1px solid var(--border);
+    }
+    .stat-num { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1; }
+    .stat-lbl { font-size: 11px; color: var(--text3); margin-top: 5px; }
+
+    .cal-nav-row {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 12px;
+    }
+    .cal-nav-row span { font-size: 14px; font-weight: 700; }
+    .cal-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--text2); padding: 4px 8px;
+      border-radius: 8px; font-size: 16px; line-height: 1;
+      transition: background 0.1s;
+    }
+    .cal-btn:hover { background: var(--surface2); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+    .cal-dow { font-size: 11px; color: var(--text3); text-align: center; padding: 4px 0; font-weight: 500; }
+    .cal-day {
+      aspect-ratio: 1; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--text3);
+    }
+    .cal-day.has-done { background: var(--green); color: #fff; font-weight: 700; }
+    .cal-day.has-skip { background: var(--red); color: #fff; font-weight: 700; }
+    .cal-day.is-today { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .cal-day.future { opacity: 0.35; }
+
+    .log-list {
+      display: flex; flex-direction: column; gap: 8px;
+      max-height: 220px; overflow-y: auto;
+    }
+    .log-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; background: var(--surface2);
+      border-radius: var(--radius-sm); border: 1px solid var(--border);
+    }
+    .log-date { font-size: 13px; color: var(--text2); }
+    .badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+    .badge-done { background: var(--green-light); color: var(--green-dark); }
+    .badge-skip { background: var(--red-light); color: var(--red-dark); }
+    .log-empty { font-size: 13px; color: var(--text3); text-align: center; padding: 20px; }
+
+    /* ══ MODALS ══ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; z-index: 100;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 28px 24px; max-width: 340px; width: 100%;
+      box-shadow: var(--shadow-md);
+      transform: scale(0.92) translateY(12px);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-align: center;
+    }
+    .modal-overlay.active .modal { transform: scale(1) translateY(0); }
+    .modal-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .modal-icon.red { background: var(--red-light); }
+    .modal-icon.red svg { color: var(--red); }
+    .modal-icon.blue { background: var(--accent-light); }
+    .modal-icon.blue svg { color: var(--accent); }
+    .modal-icon svg { width: 28px; height: 28px; }
+    .modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .modal p { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
+    .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .modal-btn {
+      padding: 11px; border-radius: var(--radius-sm); border: 1.5px solid;
+      font-family: inherit; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: background 0.12s, transform 0.1s;
+    }
+    .modal-btn:active { transform: scale(0.97); }
+    .modal-btn-cancel { border-color: var(--border); background: var(--surface2); color: var(--text2); }
+    .modal-btn-cancel:hover { background: #edf2f7; }
+    .modal-btn-red { border-color: var(--red); background: var(--red); color: #fff; }
+    .modal-btn-red:hover { background: #c53030; border-color: #c53030; }
+    .modal-btn-accent { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .modal-btn-accent:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+
+    /* ══ TOAST ══ */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: #1a202c; color: #fff;
+      font-size: 13px; font-weight: 500;
+      padding: 10px 20px; border-radius: 40px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 200; box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .log-list::-webkit-scrollbar { width: 4px; }
+    .log-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* 同步状态指示 */
+    .sync-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); display: inline-block;
+      margin-left: 6px; vertical-align: middle;
+    }
+    .sync-dot.syncing {
+      background: #f6ad55;
+      animation: pulse 1s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOADING ══ -->
+<div id="loadingScreen">
+  <div class="spinner"></div>
+  <p>正在连接…</p>
+</div>
+
+<!-- ══ AUTH ══ -->
+<div id="authScreen">
+  <div class="auth-logo">
+    <div class="auth-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <h1>每日导管记录</h1>
+    <p>数据云端同步，多设备共享</p>
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">登录</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">注册</button>
+    </div>
+
+    <!-- 登录 -->
+    <div class="auth-form" id="loginForm">
+      <div class="field">
+        <label for="loginEmail">邮箱</label>
+        <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="loginPass">密码</label>
+        <input type="password" id="loginPass" placeholder="请输入密码" autocomplete="current-password" />
+      </div>
+      <div class="auth-error" id="loginError"></div>
+      <button class="auth-submit" id="loginBtn" onclick="doLogin()">登录</button>
+    </div>
+
+    <!-- 注册 -->
+    <div class="auth-form hidden" id="registerForm">
+      <div class="field">
+        <label for="regEmail">邮箱</label>
+        <input type="email" id="regEmail" placeholder="your@email.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="regPass">密码</label>
+        <input type="password" id="regPass" placeholder="至少6个字符" autocomplete="new-password" />
+      </div>
+      <div class="field">
+        <label for="regPass2">确认密码</label>
+        <input type="password" id="regPass2" placeholder="再次输入密码" autocomplete="new-password" />
+      </div>
+      <div class="auth-error" id="registerError"></div>
+      <button class="auth-submit" id="registerBtn" onclick="doRegister()">创建账号</button>
+    </div>
+  </div>
+
+  <p class="auth-hint">数据存储于 Supabase 云端<br>支持多设备同步访问</p>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="appScreen">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>每日导管记录 <span class="sync-dot" id="syncDot" title="已同步"></span></h1>
+      <div class="date" id="headerDate"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="user-pill">
+        <div class="user-avatar" id="userAvatar"></div>
+        <span class="user-name" id="userName"></span>
+      </div>
+      <button class="logout-btn" onclick="doLogout()" title="退出登录">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 打卡 -->
+  <div class="card">
+    <div class="today-banner" id="todayBanner">
+      <svg id="bannerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></svg>
+      <span id="bannerText"></span>
+    </div>
+    <div class="btn-row">
+      <button class="action-btn btn-yes" id="btnYes" onclick="record(true)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="9 12 11.5 14.5 15.5 9.5"/>
+        </svg>
+        <span>今日已导管</span>
+      </button>
+      <button class="action-btn btn-no" id="btnNo" onclick="showNoModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="9" y1="9" x2="15" y2="15"/>
+          <line x1="15" y1="9" x2="9" y2="15"/>
+        </svg>
+        <span>今日未导管</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 统计 -->
+  <div class="card">
+    <div class="card-title">统计概览</div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-num" id="s1">—</div><div class="stat-lbl">累计导管</div></div>
+      <div class="stat"><div class="stat-num" id="s2">—</div><div class="stat-lbl">当前连续</div></div>
+      <div class="stat"><div class="stat-num" id="s3">—</div><div class="stat-lbl">本月完成率</div></div>
+    </div>
+  </div>
+
+  <!-- 日历 -->
+  <div class="card">
+    <div class="card-title">打卡日历</div>
+    <div class="cal-nav-row">
+      <button class="cal-btn" onclick="changeMonth(-1)">&#8249;</button>
+      <span id="calTitle"></span>
+      <button class="cal-btn" onclick="changeMonth(1)">&#8250;</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <!-- 记录 -->
+  <div class="card">
+    <div class="card-title">最近记录</div>
+    <div class="log-list" id="logList"></div>
+  </div>
+
+</div>
+
+<!-- 未导管确认弹窗 -->
+<div class="modal-overlay" id="noModal">
+  <div class="modal">
+    <div class="modal-icon red">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="9" y1="9" x2="15" y2="15"/>
+        <line x1="15" y1="9" x2="9" y2="15"/>
+      </svg>
+    </div>
+    <h3>今日未导管</h3>
+    <p>已记录今日未导管。<br>是否前往外部页面？</p>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeNoModal()">留在这里</button>
+      <button class="modal-btn modal-btn-red" onclick="goExternal()">前往页面</button>
+    </div>
+  </div>
+</div>
+
+<!-- 退出确认弹窗 -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div class="modal-icon blue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </div>
+    <h3>退出登录</h3>
+    <p>确定要退出当前账号吗？</p>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('logoutModal')">取消</button>
+      <button class="modal-btn modal-btn-accent" onclick="confirmLogout()">确定退出</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+/* ════════════════════════════════
+   SUPABASE INIT (ES Module)
+════════════════════════════════ */
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL  = 'https://pbkyomrnyecvpoopoand.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBia3lvbXJueWVjdnBvb3BvYW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5NDM4NTYsImV4cCI6MjA5NTUxOTg1Nn0.Zn60poYv9T9qexDm7rkVr4_xyZDB-01NiAr3h2l-jPs';
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+const EXTERNAL_URL = 'http://hsck648.cc/';
+
+/* ════════════════════════════════
+   STATE
+════════════════════════════════ */
+let currentUser = null;
+let records = {};   // { 'YYYY-MM-DD': true/false }
+let calYear, calMonth;
+
+/* ════════════════════════════════
+   HELPERS
+════════════════════════════════ */
+function pad(n) { return String(n).padStart(2,'0'); }
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+function setSyncing(on) {
+  document.getElementById('syncDot').classList.toggle('syncing', on);
+}
+
+/* ════════════════════════════════
+   AUTH UI
+════════════════════════════════ */
+function switchTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+  document.getElementById('loginForm').classList.toggle('hidden', !isLogin);
+  document.getElementById('registerForm').classList.toggle('hidden', isLogin);
+  document.getElementById('loginError').classList.remove('show');
+  document.getElementById('registerError').classList.remove('show');
+}
+
+function setAuthLoading(formId, loading) {
+  const btn = document.getElementById(formId === 'loginForm' ? 'loginBtn' : 'registerBtn');
+  btn.disabled = loading;
+  btn.textContent = loading ? '请稍候…' : (formId === 'loginForm' ? '登录' : '创建账号');
+}
+
+function showAuthError(errId, msg) {
+  const el = document.getElementById(errId);
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pwd   = document.getElementById('loginPass').value;
+  document.getElementById('loginError').classList.remove('show');
+  if (!email || !pwd) { showAuthError('loginError','请填写邮箱和密码'); return; }
+  setAuthLoading('loginForm', true);
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pwd });
+  setAuthLoading('loginForm', false);
+  if (error) { showAuthError('loginError', translateError(error.message)); return; }
+  await enterApp(data.user);
+}
+
+async function doRegister() {
+  const email = document.getElementById('regEmail').value.trim();
+  const pwd   = document.getElementById('regPass').value;
+  const pwd2  = document.getElementById('regPass2').value;
+  document.getElementById('registerError').classList.remove('show');
+  if (!email || !pwd || !pwd2) { showAuthError('registerError','请填写所有字段'); return; }
+  if (pwd.length < 6) { showAuthError('registerError','密码至少需要6个字符'); return; }
+  if (pwd !== pwd2)   { showAuthError('registerError','两次密码不一致'); return; }
+  setAuthLoading('registerForm', true);
+  const { data, error } = await sb.auth.signUp({ email, password: pwd });
+  setAuthLoading('registerForm', false);
+  if (error) { showAuthError('registerError', translateError(error.message)); return; }
+  showToast('注册成功，欢迎！');
+  await enterApp(data.user);
+}
+
+function translateError(msg) {
+  if (msg.includes('Invalid login')) return '邮箱或密码错误';
+  if (msg.includes('already registered')) return '该邮箱已注册，请直接登录';
+  if (msg.includes('Email not confirmed')) return '请先验证邮箱后再登录';
+  if (msg.includes('rate limit')) return '操作太频繁，请稍后再试';
+  if (msg.includes('Network')) return '网络连接失败，请检查网络';
+  return msg;
+}
+
+/* ════════════════════════════════
+   ENTER / LEAVE APP
+════════════════════════════════ */
+async function enterApp(user) {
+  currentUser = user;
+  const now = new Date();
+  calYear = now.getFullYear(); calMonth = now.getMonth();
+
+  // 头像/用户名
+  const email = user.email || '';
+  const initials = email.slice(0,2).toUpperCase();
+  const displayName = email.split('@')[0];
+  document.getElementById('userAvatar').textContent = initials;
+  document.getElementById('userName').textContent = displayName;
+  document.getElementById('headerDate').textContent =
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 · ${['周日','周一','周二','周三','周四','周五','周六'][now.getDay()]}`;
+
+  // 切换界面
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('authScreen').classList.remove('visible');
+  document.getElementById('appScreen').classList.add('visible');
+
+  // 清空输入框
+  ['loginEmail','loginPass','regEmail','regPass','regPass2'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+
+  await fetchRecords();
+}
+
+function doLogout() {
+  document.getElementById('logoutModal').classList.add('active');
+}
+async function confirmLogout() {
+  closeModal('logoutModal');
+  await sb.auth.signOut();
+  currentUser = null;
+  records = {};
+  document.getElementById('appScreen').classList.remove('visible');
+  document.getElementById('authScreen').classList.add('visible');
+  showToast('已退出登录');
+}
+
+/* ════════════════════════════════
+   SUPABASE DATA
+════════════════════════════════ */
+async function fetchRecords() {
+  setSyncing(true);
+  const { data, error } = await sb
+    .from('records')
+    .select('record_date, done')
+    .eq('user_id', currentUser.id);
+
+  setSyncing(false);
+  if (error) { showToast('数据加载失败：' + error.message); return; }
+
+  records = {};
+  (data || []).forEach(r => { records[r.record_date] = r.done; });
+  render();
+}
+
+async function upsertRecord(dateKey, done) {
+  setSyncing(true);
+  setRecordBtnsDisabled(true);
+  const { error } = await sb.from('records').upsert(
+    { user_id: currentUser.id, record_date: dateKey, done },
+    { onConflict: 'user_id,record_date' }
+  );
+  setSyncing(false);
+  setRecordBtnsDisabled(false);
+  if (error) {
+    showToast('同步失败，请重试');
+    console.error(error);
+    return false;
+  }
+  return true;
+}
+
+function setRecordBtnsDisabled(dis) {
+  document.getElementById('btnYes').disabled = dis;
+  document.getElementById('btnNo').disabled  = dis;
+}
+
+/* ════════════════════════════════
+   RECORD ACTION
+════════════════════════════════ */
+async function record(done) {
+  const key = todayKey();
+  // 乐观更新
+  records[key] = done;
+  render();
+  showToast(done ? '✓ 今日已导管，继续加油！' : '已记录：今日未导管');
+  // 写入云端
+  const ok = await upsertRecord(key, done);
+  if (!ok) {
+    // 回滚
+    delete records[key];
+    render();
+  }
+}
+
+/* ════════════════════════════════
+   MODALS
+════════════════════════════════ */
+function showNoModal() {
+  record(false);
+  document.getElementById('noModal').classList.add('active');
+}
+function closeNoModal() {
+  document.getElementById('noModal').classList.remove('active');
+}
+function goExternal() {
+  closeNoModal();
+  window.open(EXTERNAL_URL, '_blank', 'noopener,noreferrer');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('active');
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active')
+    .forEach(el => el.classList.remove('active'));
+});
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('regPass2').addEventListener('keydown',  e => { if(e.key==='Enter') doRegister(); });
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+/* ════════════════════════════════
+   STATS
+════════════════════════════════ */
+function calcStreak() {
+  let streak = 0, d = new Date();
+  while (true) {
+    const k = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    if (records[k] === true) { streak++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+function calcMonthRate(y, m) {
+  const now = new Date();
+  const isCurrent = y === now.getFullYear() && m === now.getMonth();
+  const limit = isCurrent ? now.getDate() : new Date(y, m+1, 0).getDate();
+  let done = 0, total = 0;
+  for (let d = 1; d <= limit; d++) {
+    const k = `${y}-${pad(m+1)}-${pad(d)}`;
+    if (records[k] !== undefined) { total++; if(records[k]) done++; }
+  }
+  return total > 0 ? Math.round(done / total * 100) + '%' : '—';
+}
+
+/* ════════════════════════════════
+   RENDER
+════════════════════════════════ */
+function renderTodayBanner() {
+  const t = todayKey();
+  const el   = document.getElementById('todayBanner');
+  const icon = document.getElementById('bannerIcon');
+  const text = document.getElementById('bannerText');
+  if (records[t] === undefined) { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  if (records[t]) {
+    el.className = 'today-banner done';
+    icon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
+    text.textContent = '今日已导管，很棒！';
+  } else {
+    el.className = 'today-banner skip';
+    icon.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
+    text.textContent = '今日未导管，明天继续加油';
+  }
+}
+
+function renderStats() {
+  document.getElementById('s1').textContent = Object.values(records).filter(v => v === true).length;
+  document.getElementById('s2').textContent = calcStreak();
+  document.getElementById('s3').textContent = calcMonthRate(calYear, calMonth);
+}
+
+function renderCalendar() {
+  const now = new Date(), todayStr = todayKey();
+  document.getElementById('calTitle').textContent = `${calYear}年${calMonth+1}月`;
+  const dows = ['日','一','二','三','四','五','六'];
+  let html = dows.map(d => `<div class="cal-dow">${d}</div>`).join('');
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const days  = new Date(calYear, calMonth+1, 0).getDate();
+  for (let i = 0; i < first; i++) html += '<div></div>';
+  for (let d = 1; d <= days; d++) {
+    const k = `${calYear}-${pad(calMonth+1)}-${pad(d)}`;
+    const isToday  = k === todayStr;
+    const isFuture = new Date(calYear, calMonth, d) > now && !isToday;
+    let cls = 'cal-day';
+    if (records[k] === true)  cls += ' has-done';
+    else if (records[k] === false) cls += ' has-skip';
+    if (isToday)  cls += ' is-today';
+    if (isFuture) cls += ' future';
+    html += `<div class="${cls}">${d}</div>`;
+  }
+  document.getElementById('calGrid').innerHTML = html;
+}
+
+function renderLog() {
+  const el = document.getElementById('logList');
+  const keys = Object.keys(records).sort((a,b) => b.localeCompare(a)).slice(0, 12);
+  if (!keys.length) { el.innerHTML = '<div class="log-empty">暂无记录</div>'; return; }
+  el.innerHTML = keys.map(k => {
+    const [y, mo, d] = k.split('-');
+    const label = `${y}年${parseInt(mo)}月${parseInt(d)}日`;
+    const done = records[k];
+    return `<div class="log-item">
+      <span class="log-date">${label}</span>
+      <span class="badge ${done ? 'badge-done' : 'badge-skip'}">${done ? '已导管' : '未导管'}</span>
+    </div>`;
+  }).join('');
+}
+
+function render() {
+  renderTodayBanner();
+  renderStats();
+  renderCalendar();
+  renderLog();
+}
+
+function changeMonth(delta) {
+  calMonth += delta;
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  if (calMonth > 11) { calMonth = 0;  calYear++; }
+  render();
+}
+
+/* ════════════════════════════════
+   INIT — 监听 Supabase Auth 状态
+════════════════════════════════ */
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (session?.user) {
+    if (!currentUser) await enterApp(session.user);
+  } else {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('authScreen').classList.add('visible');
+  }
+});
+
+// 初始检查（防止 onAuthStateChange 在某些浏览器延迟触发）
+setTimeout(() => {
+  if (!currentUser) {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('authScreen').classList.add('visible');
+  }
+}, 3000);
+
+/* ════════════════════════════════
+   EXPOSE TO WINDOW (for onclick=)
+════════════════════════════════ */
+window.switchTab    = switchTab;
+window.doLogin      = doLogin;
+window.doRegister   = doRegister;
+window.doLogout     = doLogout;
+window.confirmLogout= confirmLogout;
+window.record       = record;
+window.showNoModal  = showNoModal;
+window.closeNoModal = closeNoModal;
+window.goExternal   = goExternal;
+window.closeModal   = closeModal;
+window.changeMonth  = changeMonth;
+</script>
+</body>
+</html>
