@@ -765,19 +765,6 @@ function calcStreak() {
   }
   return s;
 }
-function calcMaxStreak() {
-  const keys=Object.keys(records).filter(k=>records[k]?.done).sort();
-  let max=0,cur=0,prev=null;
-  keys.forEach(k=>{
-    if(prev){
-      const d1=new Date(prev),d2=new Date(k);
-      const diff=(d2-d1)/86400000;
-      cur = diff===1 ? cur+1 : 1;
-    } else cur=1;
-    max=Math.max(max,cur); prev=k;
-  });
-  return max;
-}
 function calcMonthRate(y,m) {
   const now=new Date(), isCurrent=y===now.getFullYear()&&m===now.getMonth();
   const limit=isCurrent?now.getDate():new Date(y,m+1,0).getDate();
@@ -787,12 +774,6 @@ function calcMonthRate(y,m) {
     if(records[k]!==undefined){total++;if(records[k]?.done)done++;}
   }
   return total>0?Math.round(done/total*100)+'%':'—';
-}
-function calcOverallRate() {
-  const vals=Object.values(records);
-  if(!vals.length) return '—';
-  const done=vals.filter(v=>v?.done).length;
-  return Math.round(done/vals.length*100)+'%';
 }
  
 /* ── RENDER HOME ── */
