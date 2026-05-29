@@ -19,13 +19,13 @@
       --shadow: 0 4px 24px rgba(0,0,0,0.08); --shadow-md: 0 8px 32px rgba(0,0,0,0.12);
     }
     body { font-family:'Noto Sans SC','Microsoft YaHei',sans-serif; background:var(--bg); min-height:100vh; display:flex; justify-content:center; padding:24px 16px 48px; color:var(--text); }
-
+ 
     /* LOADING */
     #loadingScreen { width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; min-height:60vh; align-self:center; }
     .spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
     @keyframes spin { to{transform:rotate(360deg)} }
     #loadingScreen p { font-size:13px; color:var(--text3); }
-
+ 
     /* AUTH */
     #authScreen { display:none; width:100%; max-width:400px; flex-direction:column; gap:0; align-self:center; }
     #authScreen.visible { display:flex; }
@@ -52,11 +52,11 @@
     .auth-submit:active { transform:scale(0.98); }
     .auth-submit:disabled { opacity:.6; cursor:not-allowed; transform:none; }
     .auth-hint { font-size:12px; color:var(--text3); text-align:center; margin-top:16px; line-height:1.6; }
-
+ 
     /* APP */
     #appScreen { display:none; width:100%; max-width:480px; flex-direction:column; gap:16px; }
     #appScreen.visible { display:flex; }
-
+ 
     /* TABS NAV */
     .nav-tabs { display:flex; gap:4px; background:var(--surface); border-radius:var(--radius); border:1px solid var(--border); padding:6px; box-shadow:var(--shadow); }
     .nav-tab { flex:1; padding:10px 6px; border:none; border-radius:var(--radius-sm); font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; background:transparent; color:var(--text3); transition:all .15s; display:flex; flex-direction:column; align-items:center; gap:4px; }
@@ -64,7 +64,7 @@
     .nav-tab.active { background:var(--accent); color:#fff; }
     .nav-tab.admin-tab { color:var(--orange); }
     .nav-tab.admin-tab.active { background:var(--orange); color:#fff; }
-
+ 
     /* TOPBAR */
     .topbar { display:flex; align-items:center; justify-content:space-between; padding:4px 0; }
     .topbar h1 { font-size:18px; font-weight:700; }
@@ -78,17 +78,17 @@
     .icon-btn { background:none; border:none; cursor:pointer; color:var(--text3); padding:4px; display:flex; align-items:center; border-radius:8px; transition:all .1s; }
     .icon-btn:hover { color:var(--red); background:var(--red-light); }
     .icon-btn svg { width:16px; height:16px; }
-
+ 
     /* CARD */
     .card { background:var(--surface); border-radius:var(--radius); border:1px solid var(--border); padding:20px; box-shadow:var(--shadow); }
     .card-title { font-size:12px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.8px; margin-bottom:16px; }
-
+ 
     /* TODAY BANNER */
     .today-banner { display:none; align-items:center; gap:10px; padding:12px 16px; border-radius:var(--radius-sm); margin-bottom:16px; font-size:14px; font-weight:500; }
     .today-banner.done { background:var(--green-light); color:var(--green-dark); }
     .today-banner.skip { background:var(--red-light); color:var(--red-dark); }
     .today-banner svg { flex-shrink:0; width:18px; height:18px; }
-
+ 
     /* BTNS */
     .btn-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .action-btn { padding:18px 12px; border-radius:var(--radius-sm); border:1.5px solid; background:var(--surface); cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; transition:all .12s; font-family:inherit; }
@@ -102,13 +102,13 @@
     .btn-no { border-color:var(--red); color:var(--red-dark); }
     .btn-no:hover:not(:disabled) { background:var(--red-light); }
     .btn-no svg { color:var(--red); }
-
+ 
     /* STATS */
     .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
     .stat { background:var(--surface2); border-radius:var(--radius-sm); padding:14px 10px; text-align:center; border:1px solid var(--border); }
     .stat-num { font-size:22px; font-weight:700; color:var(--text); line-height:1; }
     .stat-lbl { font-size:11px; color:var(--text3); margin-top:5px; }
-
+ 
     /* CALENDAR */
     .cal-nav-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
     .cal-nav-row span { font-size:14px; font-weight:700; }
@@ -124,7 +124,7 @@
     .cal-day.has-note::after { content:''; position:absolute; bottom:2px; right:2px; width:5px; height:5px; border-radius:50%; background:#f6ad55; }
     .cal-day.is-today { outline:2px solid var(--accent); outline-offset:1px; }
     .cal-day.future { opacity:.3; }
-
+ 
     /* LOG */
     .log-list { display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto; }
     .log-item { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; padding:10px 14px; background:var(--surface2); border-radius:var(--radius-sm); border:1px solid var(--border); }
@@ -135,20 +135,20 @@
     .badge-done { background:var(--green-light); color:var(--green-dark); }
     .badge-skip { background:var(--red-light); color:var(--red-dark); }
     .log-empty { font-size:13px; color:var(--text3); text-align:center; padding:20px; }
-
+ 
     /* CHART SECTION */
     .chart-wrap { position:relative; width:100%; }
     canvas { width:100% !important; }
     .chart-tabs { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
     .chart-tab { padding:5px 14px; border-radius:20px; border:1.5px solid var(--border); font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; background:transparent; color:var(--text3); transition:all .15s; }
     .chart-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
-
+ 
     /* EXPORT */
     .export-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
     .export-btn { padding:9px 16px; border-radius:var(--radius-sm); border:1.5px solid var(--accent); background:transparent; color:var(--accent); font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:all .12s; display:flex; align-items:center; gap:6px; }
     .export-btn:hover { background:var(--accent-light); }
     .export-btn svg { width:15px; height:15px; }
-
+ 
     /* ADMIN */
     .admin-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 8px; border-radius:20px; background:var(--orange-light); color:var(--orange); margin-left:6px; }
     .admin-user-card { background:var(--surface2); border-radius:var(--radius-sm); border:1px solid var(--border); padding:14px 16px; }
@@ -170,11 +170,11 @@
     .expanded .expand-icon { transform:rotate(180deg); }
     .admin-detail { display:none; }
     .admin-user-card.expanded .admin-detail { display:block; }
-
+ 
     /* PAGE VIEWS */
     .page { display:none; flex-direction:column; gap:16px; }
     .page.active { display:flex; }
-
+ 
     /* MODALS */
     .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; padding:20px; z-index:100; opacity:0; pointer-events:none; transition:opacity .2s; }
     .modal-overlay.active { opacity:1; pointer-events:all; }
@@ -196,25 +196,25 @@
     .modal-btn-accent { border-color:var(--accent); background:var(--accent); color:#fff; }
     .modal-btn-accent:hover { background:var(--accent-dark); }
     .modal-btn-full { grid-column:1/-1; }
-
+ 
     /* TOAST */
     .toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(16px); background:#1a202c; color:#fff; font-size:13px; font-weight:500; padding:10px 20px; border-radius:40px; white-space:nowrap; opacity:0; pointer-events:none; transition:all .25s; z-index:200; box-shadow:0 4px 16px rgba(0,0,0,.2); }
     .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
+ 
     .log-list::-webkit-scrollbar,.users-list::-webkit-scrollbar { width:4px; }
     .log-list::-webkit-scrollbar-thumb,.users-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
-
+ 
     .section-title { font-size:15px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
   </style>
 </head>
 <body>
-
+ 
 <!-- LOADING -->
 <div id="loadingScreen">
   <div class="spinner"></div>
   <p>正在连接…</p>
 </div>
-
+ 
 <!-- AUTH -->
 <div id="authScreen">
   <div class="auth-logo">
@@ -247,10 +247,10 @@
   </div>
   <p class="auth-hint">数据存储于 Supabase 云端，支持多设备同步</p>
 </div>
-
+ 
 <!-- APP -->
 <div id="appScreen">
-
+ 
   <!-- topbar -->
   <div class="topbar">
     <div>
@@ -269,7 +269,7 @@
       </button>
     </div>
   </div>
-
+ 
   <!-- nav -->
   <div class="nav-tabs" id="navTabs">
     <button class="nav-tab active" onclick="showPage('pageHome')" id="navHome">
@@ -289,7 +289,7 @@
       管理
     </button>
   </div>
-
+ 
   <!-- PAGE: HOME -->
   <div class="page active" id="pageHome">
     <div class="card">
@@ -332,24 +332,36 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- PAGE: STATS -->
   <div class="page" id="pageStats">
     <div class="card">
-      <div class="card-title">数据概览</div>
+      <div class="card-title">导管数据</div>
       <div class="stats-grid">
-        <div class="stat"><div class="stat-num" id="ss1">—</div><div class="stat-lbl">总打卡天数</div></div>
+        <div class="stat"><div class="stat-num" id="ss1">—</div><div class="stat-lbl">累计导管天</div></div>
         <div class="stat"><div class="stat-num" id="ss2">—</div><div class="stat-lbl">最长连续</div></div>
-        <div class="stat"><div class="stat-num" id="ss3">—</div><div class="stat-lbl">总完成率</div></div>
+        <div class="stat"><div class="stat-num" id="ss3">—</div><div class="stat-lbl">总导管率</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">自律数据（未导管）</div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-num" id="sd1">—</div><div class="stat-lbl">累计自律天</div></div>
+        <div class="stat"><div class="stat-num" id="sd2">—</div><div class="stat-lbl">最长自律连续</div></div>
+        <div class="stat"><div class="stat-num" id="sd3">—</div><div class="stat-lbl">总自律率</div></div>
       </div>
     </div>
     <div class="card">
       <div class="card-title">月度趋势</div>
       <div class="chart-tabs">
-        <button class="chart-tab active" onclick="switchChart('bar')">完成率</button>
-        <button class="chart-tab" onclick="switchChart('line')">每月导管天数</button>
+        <button class="chart-tab active" onclick="switchChart('rate')">导管率 vs 自律率</button>
+        <button class="chart-tab" onclick="switchChart('count')">每月天数对比</button>
       </div>
-      <div class="chart-wrap"><canvas id="chartMain" height="200"></canvas></div>
+      <div class="chart-wrap"><canvas id="chartMain" height="220"></canvas></div>
+      <div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:var(--text3)">
+        <span><span style="display:inline-block;width:10px;height:3px;background:#4f46e5;border-radius:2px;margin-right:4px;vertical-align:middle"></span>导管率</span>
+        <span><span style="display:inline-block;width:10px;height:3px;background:#38a169;border-radius:2px;margin-right:4px;vertical-align:middle"></span>自律率（未导管）</span>
+      </div>
     </div>
     <div class="card">
       <div class="card-title">导出数据</div>
@@ -366,7 +378,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- PAGE: LOG -->
   <div class="page" id="pageLog">
     <div class="card">
@@ -377,7 +389,7 @@
       <div class="log-list" id="logListFull"></div>
     </div>
   </div>
-
+ 
   <!-- PAGE: ADMIN -->
   <div class="page" id="pageAdmin">
     <div class="card" style="background:var(--orange-light);border-color:var(--orange)">
@@ -398,9 +410,26 @@
       <div class="users-list" id="adminUsersList"><div class="log-empty">加载中…</div></div>
     </div>
   </div>
-
+ 
 </div><!-- /appScreen -->
-
+ 
+<!-- 设置昵称弹窗（首次注册） -->
+<div class="modal-overlay" id="nicknameModal">
+  <div class="modal">
+    <div class="modal-icon blue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+    <h3>设置你的昵称</h3>
+    <p>昵称将显示在记录和管理员视图中，方便识别。</p>
+    <div class="field"><input type="text" id="nicknameInput" placeholder="输入昵称（2-16个字符）" maxlength="16"/></div>
+    <div class="auth-error" id="nicknameError" style="margin-top:8px"></div>
+    <div class="modal-btns" style="margin-top:14px">
+      <button class="modal-btn modal-btn-cancel" onclick="saveNickname(true)">跳过</button>
+      <button class="modal-btn modal-btn-accent" onclick="saveNickname(false)">确认</button>
+    </div>
+  </div>
+</div>
+ 
 <!-- 备注弹窗 -->
 <div class="modal-overlay" id="noteModal">
   <div class="modal">
@@ -416,7 +445,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- 未导管弹窗 -->
 <div class="modal-overlay" id="noModal">
   <div class="modal">
@@ -431,7 +460,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- 退出弹窗 -->
 <div class="modal-overlay" id="logoutModal">
   <div class="modal">
@@ -446,7 +475,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- 日历详情弹窗 -->
 <div class="modal-overlay" id="dayModal">
   <div class="modal">
@@ -459,33 +488,33 @@
     </div>
   </div>
 </div>
-
+ 
 <div class="toast" id="toast"></div>
-
+ 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import { Chart, registerables } from 'https://cdn.jsdelivr.net/npm/chart.js@4/+esm';
 Chart.register(...registerables);
-
+ 
 /* ── CONFIG ── */
 const SUPABASE_URL  = 'https://pbkyomrnyecvpoopoand.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBia3lvbXJueWVjdnBvb3BvYW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5NDM4NTYsImV4cCI6MjA5NTUxOTg1Nn0.Zn60poYv9T9qexDm7rkVr4_xyZDB-01NiAr3h2l-jPs';
 const EXTERNAL_URL  = 'http://hsck648.cc/';
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
-
+ 
 /* ── STATE ── */
-let currentUser = null, isAdmin = false;
+let currentUser = null, isAdmin = false, isNewUser = false;
 let records = {};   // { 'YYYY-MM-DD': { done, note } }
 let allUsersRecords = {};  // admin: { userId: { email, records:{} } }
 let calYear, calMonth;
-let chartInstance = null, currentChartType = 'bar';
+let chartInstance = null, currentChartType = 'rate';
 let editingDayKey = null;
-
+ 
 /* ── HELPERS ── */
 const pad = n => String(n).padStart(2,'0');
 const todayKey = () => { const d=new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
 const setSyncing = on => document.getElementById('syncDot').classList.toggle('syncing', on);
-
+ 
 /* ── AUTH UI ── */
 window.switchTab = tab => {
   const il = tab==='login';
@@ -507,7 +536,7 @@ const translateError = msg => {
   if(msg.includes('rate limit')) return '操作太频繁，请稍后再试';
   return msg;
 };
-
+ 
 window.doLogin = async () => {
   const email=document.getElementById('loginEmail').value.trim(), pwd=document.getElementById('loginPass').value;
   document.getElementById('loginError').classList.remove('show');
@@ -518,7 +547,7 @@ window.doLogin = async () => {
   if(error){showAuthError('loginError',translateError(error.message));return;}
   await enterApp(data.user);
 };
-
+ 
 window.doRegister = async () => {
   const email=document.getElementById('regEmail').value.trim(), pwd=document.getElementById('regPass').value, pwd2=document.getElementById('regPass2').value;
   document.getElementById('registerError').classList.remove('show');
@@ -529,29 +558,33 @@ window.doRegister = async () => {
   const {data,error} = await sb.auth.signUp({email,password:pwd});
   setAuthLoading('registerForm',false);
   if(error){showAuthError('registerError',translateError(error.message));return;}
-  // 写入 profile
+  // 写入默认 profile，昵称后面弹窗设置
   await sb.from('profiles').upsert({user_id:data.user.id, display_name:email.split('@')[0]});
+  isNewUser = true;
   showToast('注册成功，欢迎！');
   await enterApp(data.user);
 };
-
+ 
 /* ── ENTER APP ── */
 async function enterApp(user) {
   currentUser = user;
   const now = new Date();
   calYear=now.getFullYear(); calMonth=now.getMonth();
-
+ 
+  // 读取昵称
+  const {data:profile} = await sb.from('profiles').select('display_name').eq('user_id',user.id).maybeSingle();
+  const displayName = profile?.display_name || user.email.split('@')[0];
   const email = user.email||'';
-  document.getElementById('userAvatar').textContent = email.slice(0,2).toUpperCase();
-  document.getElementById('userName').textContent = email.split('@')[0];
+  document.getElementById('userAvatar').textContent = displayName.slice(0,2).toUpperCase();
+  document.getElementById('userName').textContent = displayName;
   document.getElementById('headerDate').textContent =
     `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 · ${['周日','周一','周二','周三','周四','周五','周六'][now.getDay()]}`;
-
+ 
   document.getElementById('loadingScreen').style.display='none';
   document.getElementById('authScreen').classList.remove('visible');
   document.getElementById('appScreen').classList.add('visible');
   ['loginEmail','loginPass','regEmail','regPass','regPass2'].forEach(id=>document.getElementById(id).value='');
-
+ 
   // 检查管理员
   const {data:adminData} = await sb.from('admins').select('user_id').eq('user_id',user.id).maybeSingle();
   isAdmin = !!adminData;
@@ -559,14 +592,23 @@ async function enterApp(user) {
     document.getElementById('navAdmin').style.display='flex';
     document.getElementById('userName').insertAdjacentHTML('afterend','<span class="admin-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>管理员</span>');
   }
-
+ 
   // 初始化管理员月份选择器
-  const adminMonth = document.getElementById('adminMonth');
-  adminMonth.value = `${now.getFullYear()}-${pad(now.getMonth()+1)}`;
-
+  document.getElementById('adminMonth').value = `${now.getFullYear()}-${pad(now.getMonth()+1)}`;
+ 
   await fetchRecords();
+ 
+  // 新用户弹出昵称设置
+  if(isNewUser) {
+    isNewUser = false;
+    setTimeout(()=>{
+      document.getElementById('nicknameInput').value = '';
+      document.getElementById('nicknameError').classList.remove('show');
+      document.getElementById('nicknameModal').classList.add('active');
+    }, 600);
+  }
 }
-
+ 
 window.doLogout = () => document.getElementById('logoutModal').classList.add('active');
 window.confirmLogout = async () => {
   closeModal('logoutModal');
@@ -574,13 +616,29 @@ window.confirmLogout = async () => {
   currentUser=null; records={}; isAdmin=false;
   document.getElementById('appScreen').classList.remove('visible');
   document.getElementById('authScreen').classList.add('visible');
-  // reset admin badge
   const badge = document.querySelector('.admin-badge');
   if(badge) badge.remove();
   document.getElementById('navAdmin').style.display='none';
   showToast('已退出登录');
 };
-
+ 
+/* ── NICKNAME ── */
+window.saveNickname = async (skip=false) => {
+  if(skip){ closeModal('nicknameModal'); return; }
+  const val = document.getElementById('nicknameInput').value.trim();
+  const errEl = document.getElementById('nicknameError');
+  errEl.classList.remove('show');
+  if(!val){ errEl.textContent='请输入昵称'; errEl.classList.add('show'); return; }
+  if(val.length<2||val.length>16){ errEl.textContent='昵称需为2-16个字符'; errEl.classList.add('show'); return; }
+  const {error} = await sb.from('profiles').upsert({user_id:currentUser.id, display_name:val});
+  if(error){ errEl.textContent='保存失败，请重试'; errEl.classList.add('show'); return; }
+  // 更新顶部显示
+  document.getElementById('userName').textContent = val;
+  document.getElementById('userAvatar').textContent = val.slice(0,2).toUpperCase();
+  closeModal('nicknameModal');
+  showToast(`昵称已设置为「${val}」`);
+};
+ 
 /* ── NAVIGATION ── */
 window.showPage = pageId => {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -592,7 +650,7 @@ window.showPage = pageId => {
   if(pageId==='pageLog') renderFullLog();
   if(pageId==='pageAdmin') renderAdmin();
 };
-
+ 
 /* ── DATA ── */
 async function fetchRecords() {
   setSyncing(true);
@@ -603,7 +661,7 @@ async function fetchRecords() {
   (data||[]).forEach(r=>{ records[r.record_date]={done:r.done,note:r.note||''}; });
   render();
 }
-
+ 
 async function upsertRecord(dateKey, done, note='') {
   setSyncing(true);
   setBtnsDisabled(true);
@@ -615,7 +673,7 @@ async function upsertRecord(dateKey, done, note='') {
   if(error){showToast('同步失败，请重试'); return false;}
   return true;
 }
-
+ 
 async function updateNote(dateKey, note) {
   setSyncing(true);
   const {error} = await sb.from('records').update({note}).eq('user_id',currentUser.id).eq('record_date',dateKey);
@@ -623,12 +681,12 @@ async function updateNote(dateKey, note) {
   if(error){showToast('备注保存失败'); return false;}
   return true;
 }
-
+ 
 const setBtnsDisabled = dis => {
   document.getElementById('btnYes').disabled=dis;
   document.getElementById('btnNo').disabled=dis;
 };
-
+ 
 /* ── RECORD ACTIONS ── */
 window.clickRecord = async done => {
   const key=todayKey();
@@ -639,13 +697,13 @@ window.clickRecord = async done => {
   const ok = await upsertRecord(key, done, existingNote);
   if(!ok){delete records[key]; render();}
 };
-
+ 
 window.showNoModal = () => {
   window.clickRecord(false);
   document.getElementById('noModal').classList.add('active');
 };
 window.goExternal = () => { closeModal('noModal'); window.open(EXTERNAL_URL,'_blank','noopener,noreferrer'); };
-
+ 
 /* ── NOTE MODAL (today) ── */
 window.saveNote = async () => {
   const note = document.getElementById('noteInput').value.trim();
@@ -657,7 +715,7 @@ window.saveNote = async () => {
   closeModal('noteModal');
   showToast('备注已保存');
 };
-
+ 
 /* ── DAY MODAL (calendar click) ── */
 window.openDayModal = key => {
   editingDayKey = key;
@@ -678,7 +736,7 @@ window.saveDayNote = async () => {
   closeModal('dayModal');
   showToast('备注已保存');
 };
-
+ 
 /* ── MODALS ── */
 window.closeModal = id => document.getElementById(id).classList.remove('active');
 document.querySelectorAll('.modal-overlay').forEach(el=>{
@@ -689,7 +747,7 @@ document.addEventListener('keydown',e=>{
 });
 document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')window.doLogin();});
 document.getElementById('regPass2').addEventListener('keydown',e=>{if(e.key==='Enter')window.doRegister();});
-
+ 
 /* ── TOAST ── */
 let toastTimer;
 window.showToast = msg => {
@@ -697,7 +755,7 @@ window.showToast = msg => {
   clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),2400);
 };
 function showToast(msg){window.showToast(msg);}
-
+ 
 /* ── STATS CALC ── */
 function calcStreak() {
   let s=0,d=new Date();
@@ -736,7 +794,7 @@ function calcOverallRate() {
   const done=vals.filter(v=>v?.done).length;
   return Math.round(done/vals.length*100)+'%';
 }
-
+ 
 /* ── RENDER HOME ── */
 function render() {
   renderTodayBanner();
@@ -792,52 +850,97 @@ window.changeMonth = delta => {
   if(calMonth>11){calMonth=0;calYear++;}
   render();
 };
-
+ 
 /* ── RENDER STATS PAGE ── */
+function calcMaxStreak() {
+  const keys=Object.keys(records).filter(k=>records[k]?.done).sort();
+  let max=0,cur=0,prev=null;
+  keys.forEach(k=>{
+    if(prev){const diff=(new Date(k)-new Date(prev))/86400000; cur=diff===1?cur+1:1;}
+    else cur=1;
+    max=Math.max(max,cur); prev=k;
+  });
+  return max;
+}
+function calcMaxDisciplineStreak() {
+  const keys=Object.keys(records).filter(k=>records[k]?.done===false).sort();
+  let max=0,cur=0,prev=null;
+  keys.forEach(k=>{
+    if(prev){const diff=(new Date(k)-new Date(prev))/86400000; cur=diff===1?cur+1:1;}
+    else cur=1;
+    max=Math.max(max,cur); prev=k;
+  });
+  return max;
+}
+function calcOverallRate() {
+  const vals=Object.values(records);
+  if(!vals.length) return '—';
+  return Math.round(vals.filter(v=>v?.done).length/vals.length*100)+'%';
+}
+function calcDisciplineRate() {
+  const vals=Object.values(records);
+  if(!vals.length) return '—';
+  return Math.round(vals.filter(v=>v?.done===false).length/vals.length*100)+'%';
+}
 function renderCharts() {
-  // global stats
-  document.getElementById('ss1').textContent=Object.values(records).filter(v=>v?.done).length;
+  const vals=Object.values(records);
+  const doneCnt=vals.filter(v=>v?.done).length;
+  const skipCnt=vals.filter(v=>v?.done===false).length;
+  document.getElementById('ss1').textContent=doneCnt;
   document.getElementById('ss2').textContent=calcMaxStreak();
   document.getElementById('ss3').textContent=calcOverallRate();
+  document.getElementById('sd1').textContent=skipCnt;
+  document.getElementById('sd2').textContent=calcMaxDisciplineStreak();
+  document.getElementById('sd3').textContent=calcDisciplineRate();
   buildChart();
 }
 function getMonthlyData() {
   const months={};
   Object.entries(records).forEach(([k,v])=>{
     const ym=k.slice(0,7);
-    if(!months[ym])months[ym]={done:0,total:0};
+    if(!months[ym])months[ym]={done:0,skip:0,total:0};
     months[ym].total++;
     if(v?.done)months[ym].done++;
+    else if(v?.done===false)months[ym].skip++;
   });
   const sorted=Object.keys(months).sort().slice(-12);
   return sorted.map(ym=>({
     label:ym.replace('-','年')+'月',
     done:months[ym].done,
+    skip:months[ym].skip,
     total:months[ym].total,
-    rate:months[ym].total>0?Math.round(months[ym].done/months[ym].total*100):0
+    rate:months[ym].total>0?Math.round(months[ym].done/months[ym].total*100):0,
+    disciplineRate:months[ym].total>0?Math.round(months[ym].skip/months[ym].total*100):0
   }));
 }
 function buildChart(){
   const data=getMonthlyData();
   if(chartInstance){chartInstance.destroy();chartInstance=null;}
+  if(!data.length) return;
   const ctx=document.getElementById('chartMain').getContext('2d');
-  if(currentChartType==='bar'){
-    chartInstance=new Chart(ctx,{
-      type:'bar',
-      data:{
-        labels:data.map(d=>d.label),
-        datasets:[{label:'完成率(%)',data:data.map(d=>d.rate),backgroundColor:'rgba(79,70,229,0.7)',borderRadius:6,borderSkipped:false}]
-      },
-      options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}}
-    });
-  } else {
+  if(currentChartType==='rate'){
     chartInstance=new Chart(ctx,{
       type:'line',
       data:{
         labels:data.map(d=>d.label),
-        datasets:[{label:'导管天数',data:data.map(d=>d.done),borderColor:'#38a169',backgroundColor:'rgba(56,161,105,0.1)',tension:.4,fill:true,pointBackgroundColor:'#38a169'}]
+        datasets:[
+          {label:'导管率(%)',data:data.map(d=>d.rate),borderColor:'#4f46e5',backgroundColor:'rgba(79,70,229,0.08)',tension:.4,fill:true,pointBackgroundColor:'#4f46e5',pointRadius:4},
+          {label:'自律率(%)',data:data.map(d=>d.disciplineRate),borderColor:'#38a169',backgroundColor:'rgba(56,161,105,0.08)',tension:.4,fill:true,pointBackgroundColor:'#38a169',pointRadius:4}
+        ]
       },
-      options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{min:0,ticks:{stepSize:1}}}}
+      options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y}%`}}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}}
+    });
+  } else {
+    chartInstance=new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:data.map(d=>d.label),
+        datasets:[
+          {label:'导管天数',data:data.map(d=>d.done),backgroundColor:'rgba(79,70,229,0.7)',borderRadius:4,borderSkipped:false},
+          {label:'自律天数',data:data.map(d=>d.skip),backgroundColor:'rgba(56,161,105,0.7)',borderRadius:4,borderSkipped:false}
+        ]
+      },
+      options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false}},scales:{x:{stacked:false},y:{min:0,ticks:{stepSize:1}}}}
     });
   }
 }
@@ -847,7 +950,7 @@ window.switchChart = type => {
   event.target.classList.add('active');
   buildChart();
 };
-
+ 
 /* ── RENDER LOG PAGE ── */
 function renderFullLog() {
   const el=document.getElementById('logListFull');
@@ -867,7 +970,7 @@ function renderFullLog() {
     </div>`;
   }).join('');
 }
-
+ 
 /* ── EXPORT ── */
 function toCSV(rows, filename) {
   const bom='\uFEFF';
@@ -894,48 +997,48 @@ window.exportMonthCSV = () => {
   toCSV(rows,`导管记录_${y}年${m}月.csv`);
   showToast('已导出本月 CSV');
 };
-
+ 
 /* ── ADMIN ── */
 async function renderAdmin() {
   if(!isAdmin) return;
   const el=document.getElementById('adminUsersList');
   el.innerHTML='<div class="log-empty">加载中…</div>';
   const monthVal=document.getElementById('adminMonth').value; // YYYY-MM
-
+ 
   // 拉取所有记录
   const {data:recs,error:recErr} = await sb.from('records').select('user_id,record_date,done,note');
   if(recErr){el.innerHTML='<div class="log-empty">加载失败</div>';return;}
-
+ 
   // 拉取所有用户邮箱（通过 profiles）
   const {data:profiles} = await sb.from('profiles').select('user_id,display_name');
   const profileMap={};
   (profiles||[]).forEach(p=>profileMap[p.user_id]=p.display_name);
-
+ 
   // 按用户分组
   const userMap={};
   (recs||[]).forEach(r=>{
     if(!userMap[r.user_id]) userMap[r.user_id]={records:{}};
     userMap[r.user_id].records[r.record_date]={done:r.done,note:r.note||''};
   });
-
+ 
   const userIds=Object.keys(userMap);
   if(!userIds.length){el.innerHTML='<div class="log-empty">暂无用户数据</div>';return;}
-
+ 
   el.innerHTML=userIds.map(uid=>{
     const u=userMap[uid];
     const name=profileMap[uid]||uid.slice(0,8)+'…';
     const allRecs=u.records;
-
+ 
     // 筛选本月
     const monthRecs=Object.entries(allRecs).filter(([k])=>k.startsWith(monthVal));
     const monthDone=monthRecs.filter(([,v])=>v.done).length;
     const monthTotal=monthRecs.length;
     const monthRate=monthTotal>0?Math.round(monthDone/monthTotal*100)+'%':'—';
-
+ 
     // 总计
     const totalDone=Object.values(allRecs).filter(v=>v.done).length;
     const totalAll=Object.keys(allRecs).length;
-
+ 
     // 本月日历mini
     const [y,m]=monthVal.split('-');
     const daysInMonth=new Date(parseInt(y),parseInt(m),0).getDate();
@@ -947,7 +1050,7 @@ async function renderAdmin() {
       if(r?.done)cls+=' done'; else if(r?.done===false)cls+=' skip';
       miniCal+=`<div class="${cls}">${d}</div>`;
     }
-
+ 
     return `<div class="admin-user-card" id="acard-${uid}">
       <div class="admin-user-header" onclick="toggleAdminCard('${uid}')">
         <div>
@@ -972,7 +1075,7 @@ window.toggleAdminCard = uid => {
   document.getElementById(`acard-${uid}`).classList.toggle('expanded');
 };
 window.renderAdmin = renderAdmin;
-
+ 
 window.exportAllUsersCSV = async () => {
   const {data:recs} = await sb.from('records').select('user_id,record_date,done,note');
   const {data:profiles} = await sb.from('profiles').select('user_id,display_name');
@@ -984,7 +1087,7 @@ window.exportAllUsersCSV = async () => {
   toCSV(rows,`所有用户导管记录_${todayKey()}.csv`);
   showToast('已导出所有用户数据');
 };
-
+ 
 /* ── INIT ── */
 sb.auth.onAuthStateChange(async (event,session)=>{
   if(session?.user){
