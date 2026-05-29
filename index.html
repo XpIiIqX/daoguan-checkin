@@ -430,6 +430,16 @@
   </div>
 </div>
  
+<!-- 已导管成功弹窗 -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:52px;margin-bottom:12px">💊</div>
+    <h3 style="font-size:22px;letter-spacing:2px;margin-bottom:8px">戒为良药！！！</h3>
+    <p style="color:var(--text2);font-size:14px;margin-bottom:20px">今日已完成导管记录，继续保持！</p>
+    <button class="modal-btn modal-btn-accent modal-btn-full" onclick="closeModal('successModal')">好的 👍</button>
+  </div>
+</div>
+ 
 <!-- 备注弹窗 -->
 <div class="modal-overlay" id="noteModal">
   <div class="modal">
@@ -697,7 +707,11 @@ window.clickRecord = async done => {
   const existingNote = records[key]?.note||'';
   records[key]={done,note:existingNote};
   render();
-  showToast(done?'✓ 今日已导管，继续加油！':'已记录：今日未导管');
+  if(done) {
+    document.getElementById('successModal').classList.add('active');
+  } else {
+    showToast('已记录：今日未导管');
+  }
   const ok = await upsertRecord(key, done, existingNote);
   if(!ok){delete records[key]; render();}
 };
