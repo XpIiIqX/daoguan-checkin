@@ -398,6 +398,35 @@
         <span style="font-size:13px;font-weight:700;color:var(--orange)">管理员视图 — 可查看所有用户数据</span>
       </div>
     </div>
+ 
+    <!-- 发送通知卡片 -->
+    <div class="card">
+      <div class="card-title">发送打卡通知</div>
+      <div class="field" style="margin-bottom:12px">
+        <label>发送对象</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);cursor:pointer;font-size:13px;font-weight:500" id="targetAllLabel">
+            <input type="radio" name="notifyTarget" value="all" id="targetAll" style="accent-color:var(--accent)"> 所有用户
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);cursor:pointer;font-size:13px;font-weight:500" id="targetUncheckedLabel">
+            <input type="radio" name="notifyTarget" value="unchecked" id="targetUnchecked" checked style="accent-color:var(--accent)"> 今日未打卡
+          </label>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:12px">
+        <label>邮件主题</label>
+        <input type="text" id="notifySubject" value="每日导管打卡提醒" placeholder="邮件主题"/>
+      </div>
+      <div class="field" style="margin-bottom:16px">
+        <label>通知内容</label>
+        <textarea id="notifyContent" rows="4" placeholder="编辑通知内容…">你好，今天还没有完成打卡记录，请记得登录并记录今日导管情况。坚持打卡，戒为良药！</textarea>
+      </div>
+      <button class="auth-submit" id="sendNotifyBtn" onclick="sendNotification()" style="background:var(--orange);margin-top:0;display:flex;align-items:center;justify-content:center;gap:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        发送通知邮件
+      </button>
+    </div>
+ 
     <div class="card">
       <div class="admin-filter">
         <label>筛选月份：</label>
@@ -412,6 +441,31 @@
   </div>
  
 </div><!-- /appScreen -->
+ 
+<!-- 发送通知确认弹窗 -->
+<div class="modal-overlay" id="notifyConfirmModal">
+  <div class="modal" style="text-align:center">
+    <div class="modal-icon" style="background:var(--orange-light)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </div>
+    <h3>确认发送</h3>
+    <p id="notifyConfirmText">即将发送通知邮件，确认吗？</p>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('notifyConfirmModal')">取消</button>
+      <button class="modal-btn" onclick="confirmSendNotification()" style="border-color:var(--orange);background:var(--orange);color:#fff">确认发送</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- 发送结果弹窗 -->
+<div class="modal-overlay" id="notifyResultModal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:48px;margin-bottom:12px" id="notifyResultIcon">✅</div>
+    <h3 id="notifyResultTitle">发送成功</h3>
+    <p id="notifyResultText"></p>
+    <button class="modal-btn modal-btn-accent modal-btn-full" style="margin-top:4px" onclick="closeModal('notifyResultModal')">好的</button>
+  </div>
+</div>
  
 <!-- 设置昵称弹窗（首次注册） -->
 <div class="modal-overlay" id="nicknameModal">
@@ -1095,6 +1149,62 @@ window.exportAllUsersCSV = async () => {
   });
   toCSV(rows,`所有用户导管记录_${todayKey()}.csv`);
   showToast('已导出所有用户数据');
+};
+ 
+/* ── SEND NOTIFICATION ── */
+window.sendNotification = () => {
+  const target = document.querySelector('input[name="notifyTarget"]:checked')?.value || 'unchecked';
+  const subject = document.getElementById('notifySubject').value.trim();
+  const content = document.getElementById('notifyContent').value.trim();
+  if(!subject){ showToast('请填写邮件主题'); return; }
+  if(!content){ showToast('请填写通知内容'); return; }
+  const targetLabel = target==='all' ? '所有用户' : '今日未打卡用户';
+  document.getElementById('notifyConfirmText').textContent = `即将发送给【${targetLabel}】，确认吗？`;
+  document.getElementById('notifyConfirmModal').classList.add('active');
+};
+ 
+window.confirmSendNotification = async () => {
+  closeModal('notifyConfirmModal');
+  const btn = document.getElementById('sendNotifyBtn');
+  btn.disabled = true;
+  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> 发送中…`;
+ 
+  const target  = document.querySelector('input[name="notifyTarget"]:checked')?.value || 'unchecked';
+  const subject = document.getElementById('notifySubject').value.trim();
+  const content = document.getElementById('notifyContent').value.trim();
+ 
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(
+      'https://pbkyomrnyecvpoopoand.supabase.co/functions/v1/send-reminder',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ subject, content, send_to: target }),
+      }
+    );
+    const json = await res.json();
+    if(res.ok) {
+      document.getElementById('notifyResultIcon').textContent = '✅';
+      document.getElementById('notifyResultTitle').textContent = '发送成功';
+      document.getElementById('notifyResultText').textContent = `成功发送 ${json.sent} 封，共匹配 ${json.total} 位用户。`;
+    } else {
+      document.getElementById('notifyResultIcon').textContent = '❌';
+      document.getElementById('notifyResultTitle').textContent = '发送失败';
+      document.getElementById('notifyResultText').textContent = json.error || '请检查 Edge Function 配置';
+    }
+  } catch(e) {
+    document.getElementById('notifyResultIcon').textContent = '❌';
+    document.getElementById('notifyResultTitle').textContent = '发送失败';
+    document.getElementById('notifyResultText').textContent = '网络错误：' + e.message;
+  }
+ 
+  btn.disabled = false;
+  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> 发送通知邮件`;
+  document.getElementById('notifyResultModal').classList.add('active');
 };
  
 /* ── INIT ── */
